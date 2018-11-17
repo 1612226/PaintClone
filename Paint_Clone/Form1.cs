@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -20,13 +21,14 @@ namespace Paint_Clone
         ObjectList objectList;
         IDrawingTool tool;
         Cursor usedCursor;
+        int ClickedTextButton = 0;
 
         public Form1()
         {
             InitializeComponent();
 
             // Setup form component
-            objectList = new ObjectList(); 
+            objectList = new ObjectList();
             selectRadio.Checked = true;
         }
 
@@ -42,7 +44,15 @@ namespace Paint_Clone
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             if (tool != null)
-                tool.onMouseDown(sender, e);
+            {
+                bool isFill;
+                HatchStyle hatchStyle;
+                DashStyle dashStyle;
+                Pen pen;
+                Font font;
+                prepareInfo(out isFill, out hatchStyle, out dashStyle, out pen, out font);
+                tool.onMouseDown(sender, e, isFill, pen, btnFillColor.BackColor, cbbBrush.Text, hatchStyle, font);
+            }
         }
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
@@ -118,7 +128,6 @@ namespace Paint_Clone
                 tool = new HyperbolaTool(objectList);
                 usedCursor = Cursors.Cross;
             }
-
             // Manipulation Tools
             else if (selectRadio.Checked)
             {
@@ -180,7 +189,13 @@ namespace Paint_Clone
         {
             if (newTextRadio.Checked)
             {
-                (tool as CreateTextTool).onKeyPress(pictureBox1, e);
+                bool isFill;
+                HatchStyle hatchStyle;
+                DashStyle dashStyle;
+                Pen pen;
+                Font font;
+                prepareInfo(out isFill, out hatchStyle, out dashStyle, out pen, out font);
+                (tool as CreateTextTool).onKeyPress(pictureBox1, e, isFill, pen, btnFillColor.BackColor, cbbBrush.Text, hatchStyle, font);
             }
         }
 
@@ -189,7 +204,7 @@ namespace Paint_Clone
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Data Files|*.dat";
             openFileDialog.Title = "Select a Data File";
-            if(openFileDialog.ShowDialog() == DialogResult.OK)
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 Deserialize(openFileDialog.FileName);
                 pictureBox1.Invalidate();
@@ -200,8 +215,8 @@ namespace Paint_Clone
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Data File (*.dat)|*.dat";
-            saveFileDialog.Title = "Save an Data File";
-            if(saveFileDialog.ShowDialog() == DialogResult.OK && saveFileDialog.FileName != "")
+            saveFileDialog.Title = "Save a Data File";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK && saveFileDialog.FileName != "")
             {
                 Serialize(saveFileDialog.FileName);
                 pictureBox1.Invalidate();
@@ -248,16 +263,84 @@ namespace Paint_Clone
             }
         }
 
-        private void btnColor_Click(object sender, EventArgs e)
+
+        private void cbbFont_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (objectList.getFocusObject() != null && objectList.getFocusObject() is Text)
+            {
+                ((Text)objectList.getFocusObject()).setFontFamily(cbbFont.Text);
+                pictureBox1.Invalidate();
+            }
+        }
+
+        private void cbbFontSize_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (objectList.getFocusObject() != null && objectList.getFocusObject() is Text)
+            {
+                ((Text)objectList.getFocusObject()).setFontSize(float.Parse(cbbFontSize.Text));
+                pictureBox1.Invalidate();
+            }
+        }
+
+        private void btnBold_Click(object sender, EventArgs e)
+        {
+            if (objectList.getFocusObject() != null && objectList.getFocusObject() is Text)
+            {
+                ((Text)objectList.getFocusObject()).setFontStyle(FontStyle.Bold);
+                pictureBox1.Invalidate();
+            }
+        }
+
+        private void btnItalic_Click(object sender, EventArgs e)
+        {
+            if (objectList.getFocusObject() != null && objectList.getFocusObject() is Text)
+            {
+                ((Text)objectList.getFocusObject()).setFontStyle(FontStyle.Italic);
+                pictureBox1.Invalidate();
+            }
+        }
+
+        private void btnUnderline_Click(object sender, EventArgs e)
+        {
+            if (objectList.getFocusObject() != null && objectList.getFocusObject() is Text)
+            {
+                ((Text)objectList.getFocusObject()).setFontStyle(FontStyle.Underline);
+                pictureBox1.Invalidate();
+            }
+        }
+        private void btnNormal_Click(object sender, EventArgs e)
+        {
+            if (objectList.getFocusObject() != null && objectList.getFocusObject() is Text)
+            {
+                ((Text)objectList.getFocusObject()).setFontStyle(FontStyle.Regular);
+                pictureBox1.Invalidate();
+            }
+        }
+        private void btnBorderColor_Click(object sender, EventArgs e)
         {
             ColorDialog color = new ColorDialog();
             if (color.ShowDialog() == DialogResult.OK)
             {
-                btnColor.BackColor = color.Color;
+                btnBorderColor.BackColor = color.Color;
                 //Todo: Vẽ màu cho nhóm đường
                 if (objectList.getFocusObject() != null)
                 {
-                    objectList.getFocusObject().setOutlineColor(btnColor.BackColor);
+                    objectList.getFocusObject().setOutlineColor(btnBorderColor.BackColor);
+                    pictureBox1.Invalidate();
+                }
+            }
+        }
+
+        private void btnFillColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            if (color.ShowDialog() == DialogResult.OK)
+            {
+                btnFillColor.BackColor = color.Color;
+                //Todo: Vẽ màu cho nhóm đường
+                if (objectList.getFocusObject() != null)
+                {
+                    objectList.getFocusObject().setFillColor(btnFillColor.BackColor);
                     pictureBox1.Invalidate();
                 }
             }
@@ -267,32 +350,15 @@ namespace Paint_Clone
         {
             if (objectList.getFocusObject() != null)
             {
-                objectList.getFocusObject().setBrushStyle(cbbBrush.Text);
-                pictureBox1.Invalidate();
-            }
-        }
-
-        private void cbbFill_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cbbFill.Text == "No Fill")
-            {
-                cbbBrush.Enabled = false;
-                cbbDashStyle.Enabled = true;
-                tbWidth.Enabled = true;
-            }
-            else
-            {
-                cbbBrush.Enabled = true;
-                cbbDashStyle.Enabled = false;
-                tbWidth.Enabled = false;
-
-            }
-            if (objectList.getFocusObject() != null)
-            {
-                if (cbbFill.Text == "No Fill")
+                if (cbbBrush.Text == "No Fill")
+                {
                     objectList.getFocusObject().setFillable(false);
+                }
                 else
+                {
                     objectList.getFocusObject().setFillable(true);
+                    objectList.getFocusObject().setBrushStyle(cbbBrush.Text);
+                }
                 pictureBox1.Invalidate();
             }
         }
@@ -329,6 +395,93 @@ namespace Paint_Clone
             {
                 objectList.getFocusObject().setWidth(tbWidth.Value);
                 pictureBox1.Invalidate();
+            }
+        }
+
+        private void prepareInfo(out bool isFill, out HatchStyle hatchStyle, out DashStyle dashStyle, out Pen pen, out Font font)
+        {
+           
+            hatchStyle = new HatchStyle();
+            switch (cbbBrush.Text)
+            {
+                case "No Fill":
+                    {
+                        isFill = false;
+                        break;
+                    }
+                case "Solid Brush":
+                    {
+                        isFill = true;
+                        break;
+                    }
+                case "Hatch Brush":
+                    {
+                        isFill = true;
+                        hatchStyle = HatchStyle.BackwardDiagonal;
+                        break;
+                    }
+                default:
+                    isFill = false;
+                    break;
+            }
+            dashStyle = new DashStyle();
+            switch (cbbDashStyle.Text)
+            {
+                case "PS_SOLID":
+                    dashStyle = DashStyle.Solid;
+                    break;
+                case "PS_DOT":
+                    dashStyle = DashStyle.Dot;
+                    break;
+                case "PS_DASH":
+                    dashStyle = DashStyle.Dash;
+                    break;
+                case "PS_DASHDOT":
+                    dashStyle = DashStyle.DashDot;
+                    break;
+                case "PS_DASHDOTDOT":
+                    dashStyle = DashStyle.DashDotDot;
+                    break;
+                default:
+                    dashStyle = DashStyle.Solid;
+                    break;
+            }
+            pen = new Pen(btnBorderColor.BackColor, tbWidth.Value)
+            {
+                DashStyle = dashStyle
+            };
+            FontStyle fontStyle = new FontStyle();
+            switch (ClickedTextButton)
+            {
+                case 0:
+                    {
+                        fontStyle = FontStyle.Regular;
+                        break;
+                    }
+                case 1:
+                    {
+                        fontStyle = FontStyle.Bold;
+                        break;
+                    }
+                case 2:
+                    {
+                        fontStyle = FontStyle.Italic;
+                        break;
+                    }
+                case 3:
+                    {
+                        fontStyle = FontStyle.Underline;
+                        break;
+                    }
+            }
+            font = new Font(cbbFont.Text, float.Parse(cbbFontSize.Text), fontStyle);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            foreach(FontFamily oneFontFamily in FontFamily.Families)
+            {
+                cbbFont.Items.Add(oneFontFamily.Name);
             }
         }
     }

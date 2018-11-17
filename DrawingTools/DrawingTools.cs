@@ -25,7 +25,7 @@ namespace DrawingTools
             this.owner = owner;
         }
 
-        public abstract void onMouseDown(object sender, MouseEventArgs e);
+        public abstract void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f);
         public abstract void onMouseMove(object sender, MouseEventArgs e);
         public abstract void onPartialDraw(Graphics g);
         public abstract void reset(object sender);
@@ -44,7 +44,7 @@ namespace DrawingTools
             this.objectList = objectList;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if(e.Button == MouseButtons.Right)
             {
@@ -62,6 +62,7 @@ namespace DrawingTools
 
             // add line object to list for drawing onto picturebox
             objectList.add(new Line(firstPoint, secondPoint, true));
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             (sender as Control).Invalidate();
             firstSnap = false;
         }
@@ -109,7 +110,7 @@ namespace DrawingTools
             this.objectList = objectList;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -138,6 +139,7 @@ namespace DrawingTools
             Rect rect = new Rect(bound, true);
             rect.setBrushStyle("Solid Brush");
             objectList.add(rect);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             (sender as Control).Invalidate();
             firstSnap = false;
         }
@@ -196,7 +198,7 @@ namespace DrawingTools
             this.objectList = objectList;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -220,6 +222,7 @@ namespace DrawingTools
 
             // add parallelogram object to list for drawing onto picturebox
             objectList.add(para);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             (sender as Control).Invalidate();
             snaps = 0;
         }
@@ -275,7 +278,7 @@ namespace DrawingTools
             this.objectList = objectList;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if(e.Button == MouseButtons.Right)
             {
@@ -302,6 +305,7 @@ namespace DrawingTools
 
             Polygon poly = new Polygon(controlPoints, true);
             objectList.add(poly);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             (sender as Control).Invalidate();
             controlPoints = new List<Point>();
         }
@@ -348,7 +352,7 @@ namespace DrawingTools
             this.objectList = objectList;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -374,6 +378,7 @@ namespace DrawingTools
 
             BrokenLine line = new BrokenLine(controlPoints, true);
             objectList.add(line);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             (sender as Control).Invalidate();
             controlPoints = new List<Point>();
         }
@@ -429,7 +434,7 @@ namespace DrawingTools
             smallPart = false;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if(e.Button == MouseButtons.Right)
             {
@@ -468,6 +473,7 @@ namespace DrawingTools
             // add new circle segment to object list for drawing onto picture box
             CircleArc circle = new CircleArc(center, pivot, smallPart, radius, true);
             objectList.add(circle);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             (sender as Control).Invalidate();
             pivotSnaps = 0;
             centerSnap = false;
@@ -605,7 +611,7 @@ namespace DrawingTools
             this.objectList = objectList;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if(e.Button == MouseButtons.Right)
             {
@@ -636,6 +642,7 @@ namespace DrawingTools
 
             Circle circle = new Circle(center, size / 2, true);
             objectList.add(circle);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             firstSnap = false;
             (sender as Control).Invalidate();
         }
@@ -696,7 +703,7 @@ namespace DrawingTools
             this.objectList = objectList;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -723,6 +730,7 @@ namespace DrawingTools
 
             Ellipse ellipse = new Ellipse(center, (endX - startX) / 2.0f, (endY - startY) / 2.0f, true);
             objectList.add(ellipse);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             firstSnap = false;
             (sender as Control).Invalidate();
         }
@@ -791,7 +799,7 @@ namespace DrawingTools
             smallPart = false;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -835,6 +843,7 @@ namespace DrawingTools
             // add new ellipse segment to object list for drawing onto picture box
             EllipseArc ellipse = new EllipseArc(center, a, b, pivot, smallPart, true);
             objectList.add(ellipse);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             (sender as Control).Invalidate();
             pivotSnaps = 0;
             firstSnap = false;
@@ -999,7 +1008,7 @@ namespace DrawingTools
             controlSnaps = 0;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if(e.Button == MouseButtons.Right)
             {
@@ -1022,7 +1031,7 @@ namespace DrawingTools
             Bezier bezier = new Bezier(controlPoints, true);
             // add bezier to object list for drawing onto picture box
             objectList.add(bezier);
-
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             // redraw sender
             (sender as Control).Invalidate();
             // reset tool
@@ -1075,7 +1084,7 @@ namespace DrawingTools
             builder.Append('_');
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if(e.Button == MouseButtons.Right)
             {
@@ -1094,17 +1103,17 @@ namespace DrawingTools
         {
         }
 
-        public void onKeyPress(object sender, KeyPressEventArgs e)
+        public void onKeyPress(object sender, KeyPressEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             if (e.KeyChar == 27) // Escape
             {
-                Font font = new Font(FontFamily.GenericMonospace, 30.0f, FontStyle.Regular);
+                Font font = new Font(f.FontFamily, f.Size, f.Style);
                 StringFormat format = StringFormat.GenericDefault;
                 Text textObj = new Text(origin, builder.ToString().Substring(0, builder.Length - 1), font, format, true);
                 textObj.setResolutionX(resolutionX);
                 textObj.setResolutionY(resolutionY);
                 objectList.add(textObj);
-
+                objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
                 originSnap = false;
                 builder.Length = 0;
                 builder.Append('_');
@@ -1230,7 +1239,7 @@ namespace DrawingTools
             return true;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             // right click --> cancel action
             if (e.Button == MouseButtons.Right)
@@ -1267,6 +1276,7 @@ namespace DrawingTools
             // add parabola object to list for drawing onto picturebox
             Parabola para = new Parabola(controls, horizontal, true);
             objectList.add(para);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             (sender as Control).Invalidate();
             firstSnap = false;
         }
@@ -1402,7 +1412,7 @@ namespace DrawingTools
             return true;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             // right click --> cancel action
             if (e.Button == MouseButtons.Right)
@@ -1468,6 +1478,7 @@ namespace DrawingTools
             // add parabola object to list for drawing onto picturebox
             Hyperbola hyper = new Hyperbola(controls, horizontal, true);
             objectList.add(hyper);
+            objectList.getFocusObject().setInfo(isFill, pen, fc, bs, hs, f);
             (sender as Control).Invalidate();
             reset(sender);
         }
@@ -1586,7 +1597,7 @@ namespace DrawingTools
             objectList.defocusAll();
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             List<IDrawingObject> objList = objectList.getAllVisible(e.Location);
             objectList.defocusAll();
@@ -1624,7 +1635,7 @@ namespace DrawingTools
             chosenObject = null;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             // if right click
             // defocus chosen object
@@ -1708,7 +1719,7 @@ namespace DrawingTools
             chosenObject = null;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             // if no object is chosen
             // choose one
@@ -1755,7 +1766,7 @@ namespace DrawingTools
             controlSnap = false;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             // if right click
             // defocus chosen object
@@ -1894,7 +1905,7 @@ namespace DrawingTools
                 yFactor = yFactor < 0 ? -0.1f : 0.1f;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             // if right click
             // defocus chosen object
@@ -2021,7 +2032,7 @@ namespace DrawingTools
             return newAngle - oldAngle;
         }
 
-        public override void onMouseDown(object sender, MouseEventArgs e)
+        public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
             // if right click
             // defocus chosen object

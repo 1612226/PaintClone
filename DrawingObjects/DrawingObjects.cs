@@ -78,6 +78,7 @@ namespace DrawingObjects
         [NonSerialized]
         protected Pen borderPen = new Pen(Color.Black, 1.0f) { DashStyle = DashStyle.Solid};
         // Brush
+        protected Color fillColor = Color.Black;
         protected string brushStyle = "Solid Brush";
         protected HatchStyle hatchStyle = HatchStyle.BackwardDiagonal;
 
@@ -95,28 +96,37 @@ namespace DrawingObjects
         protected float width = 1.0f;
         protected DashStyle dashStyle = DashStyle.Solid;
 
-        
 
         public float angle = 0;
+
+        public void setInfo(bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
+        {
+            isFillable = isFill;
+            borderPen = pen;
+            fillColor = fc;
+            brushStyle = bs;
+            hatchStyle = hs;
+        }
 
         public bool isFocused()
         {
             return isFocus;
         }
-
         public void focus()
         {
             isFocus = true;
         }
- 
         public void defocus()
         {
             isFocus = false;
         }
-
         public void setOutlineColor(Color c)
         {
             borderPen.Color = c;
+        }
+        public void setFillColor(Color c)
+        {
+            fillColor = c;
         }
         public void setBrushStyle(String bs)
         {
@@ -126,6 +136,8 @@ namespace DrawingObjects
         {
             borderPen.Width = w;
         }
+
+
 
         public void setFillable(Boolean fill)
         {
@@ -142,17 +154,17 @@ namespace DrawingObjects
             {
                 case "Solid Brush":
                     {
-                        brush = new SolidBrush(borderPen.Color);
+                        brush = new SolidBrush(fillColor);
                         break;
                     }
                 case "Hatch Brush":
                     {
-                        brush = new HatchBrush(hatchStyle, borderPen.Color);
+                        brush = new HatchBrush(hatchStyle, fillColor);
                         break;
                     }
                 default:
                     {
-                        brush = null;
+                        brush = new SolidBrush(fillColor);
                         break;
                     }
             }
@@ -512,7 +524,7 @@ namespace DrawingObjects
     {
         public Rect(Rectangle rect, bool isFocus = false)
         {
-            isFillable = true;
+            isFillable = false;
 
             controlPoints = new List<Point>();
             controlPoints.Add(new Point(rect.Left, rect.Top));
@@ -528,7 +540,9 @@ namespace DrawingObjects
         protected override void derivedDraw(Graphics g, Pen pen)
         {
             if (getBrush() != null && isFillable)
+            {
                 g.FillPolygon(getBrush(), controlPoints.ToArray());
+            }
             g.DrawPolygon(pen, controlPoints.ToArray());
         }
         protected override void derivedDraw(Graphics g, Pen pen, int index, Point location)
@@ -572,7 +586,7 @@ namespace DrawingObjects
     {
         public Parallelogram(Point[] controlPoints, bool isFocus = false)
         {
-            isFillable = true;
+            isFillable = false;
             this.controlPoints = new List<Point>();
             for (int i = 0; i < 4; i++)
                 this.controlPoints.Add(controlPoints[i]);
@@ -658,7 +672,8 @@ namespace DrawingObjects
                 else
                     list.Add(controlPoints[i]);
             }
-
+            if (getBrush() != null && isFillable)
+                g.FillPolygon(getBrush(), list.ToArray());
             g.DrawPolygon(pen, list.ToArray());
         }
 
@@ -804,7 +819,10 @@ namespace DrawingObjects
             float startAngle;
             float sweepAngle;
             prepareDrawingData(out bound, out startAngle, out sweepAngle);
-
+            if(getBrush() != null && isFillable)
+            {
+                g.FillPie(getBrush(), Rectangle.Round(bound), startAngle, sweepAngle);   
+            }
             g.DrawArc(pen, bound, startAngle, sweepAngle);
         }
         protected override void derivedDrawLineBetweenControlPoints(Graphics g)
@@ -845,7 +863,10 @@ namespace DrawingObjects
                 sweepSign = -1;
             }
             sweepAngle *= sweepSign;
-
+            if (getBrush() != null && isFillable)
+            {
+                g.FillPie(getBrush(), Rectangle.Round(rect), startAngle, sweepAngle);
+            }
             g.DrawArc(pen, rect, startAngle, sweepAngle);
             g.DrawLine(pen, controlPoints[0], location);
             g.DrawLine(pen, controlPoints[0], controlPoints[other]);
@@ -922,6 +943,10 @@ namespace DrawingObjects
         // drawing
         protected override void derivedDraw(Graphics g, Pen pen)
         {
+            if(getBrush() != null && isFillable)
+            {
+                g.FillEllipse(getBrush(), new Rectangle(controlPoints[0].X - radius, controlPoints[0].Y - radius, radius * 2, radius * 2));
+            }
             g.DrawEllipse(pen, new Rectangle(controlPoints[0].X - radius, controlPoints[0].Y - radius, radius * 2, radius * 2));
         }
         protected override void derivedDraw(Graphics g, Pen pen, int index, Point location)
@@ -946,7 +971,10 @@ namespace DrawingObjects
                 bound.Height = 2 * radius;
             }
             bound.Location = new PointF(controlPoints[0].X - bound.Width / 2, controlPoints[0].Y - bound.Height / 2);
-
+            if (getBrush() != null && isFillable)
+            {
+                g.FillEllipse(getBrush(), bound);
+            }
             g.DrawEllipse(pen, bound);
         }
         protected override void derivedDrawLineBetweenControlPoints(Graphics g)
@@ -1042,6 +1070,10 @@ namespace DrawingObjects
         // drawing
         protected override void derivedDraw(Graphics g, Pen pen)
         {
+            if(getBrush() != null && isFillable)
+            {
+                g.FillEllipse(getBrush(), new RectangleF(controlPoints[0].X - a, controlPoints[0].Y - b, 2 * a, 2 * b));
+            }
             g.DrawEllipse(pen, new RectangleF(controlPoints[0].X - a, controlPoints[0].Y - b, 2 * a, 2 * b));
         }
         protected override void derivedDraw(Graphics g, Pen pen, int index, Point location)
@@ -1061,7 +1093,6 @@ namespace DrawingObjects
                 bound.Height = 2 * dy;
             }
             bound.Location = new PointF(controlPoints[0].X - bound.Width / 2, controlPoints[0].Y - bound.Height / 2);
-
             g.DrawEllipse(pen, bound);
         }
         protected override void derivedDrawLineBetweenControlPoints(Graphics g)
@@ -1196,7 +1227,10 @@ namespace DrawingObjects
             float startAngle;
             float sweepAngle;
             prepareDrawingData(out bound, out startAngle, out sweepAngle);
-
+            if(getBrush() != null && isFillable)
+            {
+                g.FillPie(getBrush(), Rectangle.Round(bound), startAngle, sweepAngle);
+            }
             g.DrawArc(pen, bound, startAngle, sweepAngle);
         }
         protected override void derivedDrawLineBetweenControlPoints(Graphics g)
@@ -1237,7 +1271,7 @@ namespace DrawingObjects
                 sweepSign = -1;
             }
             sweepAngle *= sweepSign;
-
+           
             g.DrawArc(pen, bound, startAngle, sweepAngle);
             g.DrawLine(pen, controlPoints[0], location);
             g.DrawLine(pen, controlPoints[0], controlPoints[other]);
@@ -1365,6 +1399,26 @@ namespace DrawingObjects
         {
             format = new StringFormat(formatFlags);
         }
+        public void setFontFamily(string f)
+        {
+            Font tmp = new Font(f, font.Size, font.Style);
+            font = tmp;
+        }
+        public void setFontSize(float fs)
+        {
+            Font tmp = new Font(font.FontFamily, fs, font.Style);
+            font = tmp;
+        }
+        public void setFontStyle(FontStyle fs)
+        {
+            Font tmp = new Font(font.FontFamily, font.Size, fs);
+            font = tmp;
+        }
+        public void setInfo(bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
+        {
+            base.setInfo(isFill, pen, fc, bs, hs, f);
+            font = f;
+        }
         public Text(Point origin, string text, Font font, StringFormat format, bool isFocus = false)
         {
             this.text = text;
@@ -1403,8 +1457,7 @@ namespace DrawingObjects
         // drawing
         protected override void derivedDraw(Graphics g, Pen pen)
         {
-            Brush brush = new SolidBrush(pen.Color);
-            g.DrawString(text, font, brush, controlPoints[0]);
+            g.DrawString(text, font, getBrush(), controlPoints[0]);
         }
         protected override void derivedDrawLineBetweenControlPoints(Graphics g)
         {
@@ -1520,6 +1573,10 @@ namespace DrawingObjects
             firstHalf.Reverse();
             gPath.AddLines(firstHalf.ToArray());
             gPath.AddLines(getHalfOfParabola(parabola, 1).ToArray());
+            if(getBrush() != null && isFillable)
+            {
+                g.FillPath(getBrush(), gPath);
+            }
             g.DrawPath(pen, gPath);
         }
         protected override void derivedDraw(Graphics g, Pen pen, int index, Point location)
@@ -1743,6 +1800,11 @@ namespace DrawingObjects
             secondPath.AddLines(quarter.ToArray());
 
             // draw
+            if(getBrush() != null && isFillable)
+            {
+                g.FillPath(getBrush(), firstPath);
+                g.FillPath(getBrush(), secondPath);
+            }
             g.DrawPath(pen, firstPath);
             g.DrawPath(pen, secondPath);
         }
