@@ -136,6 +136,19 @@ namespace DrawingObjects
         {
             borderPen.Width = w;
         }
+        public bool isVisible(Rectangle bound)
+        {
+            GraphicsPath gPath = new GraphicsPath();
+            GraphicsPath controlRectPath = new GraphicsPath();
+            buildGraphicsPath(gPath);
+            if (isFocused())
+                addControlRectsToGraphicPath(controlRectPath);
+
+            gPath.Transform(rotationMatrix);
+            controlRectPath.Transform(rotationMatrix);
+
+            return gPath.GetBounds().IntersectsWith(bound) || controlRectPath.GetBounds().IntersectsWith(bound);
+        }
 
 
 
@@ -460,7 +473,14 @@ namespace DrawingObjects
                     return obj;
             return null;
         }
-
+        public List<IDrawingObject> getAllVisible(Rectangle bound)
+        {
+            List<IDrawingObject> output = new List<IDrawingObject>();
+            foreach (var obj in list)
+                if (obj.isVisible(bound))
+                    output.Add(obj);
+            return output;
+        }
         public List<IDrawingObject> getAllVisible(Point location)
         {
             List<IDrawingObject> output = new List<IDrawingObject>();

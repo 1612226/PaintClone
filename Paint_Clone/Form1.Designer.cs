@@ -41,6 +41,10 @@
             this.lbFillColor = new System.Windows.Forms.Label();
             this.btnFillColor = new System.Windows.Forms.Button();
             this.panelPenAndBrush = new System.Windows.Forms.Panel();
+            this.btnNormal = new System.Windows.Forms.Button();
+            this.btnUnderline = new System.Windows.Forms.Button();
+            this.btnItalic = new System.Windows.Forms.Button();
+            this.btnBold = new System.Windows.Forms.Button();
             this.cbbFontSize = new System.Windows.Forms.ComboBox();
             this.cbbFont = new System.Windows.Forms.ComboBox();
             this.newTextRadio = new System.Windows.Forms.RadioButton();
@@ -63,10 +67,6 @@
             this.scaleRadio = new System.Windows.Forms.RadioButton();
             this.selectRadio = new System.Windows.Forms.RadioButton();
             this.pnShapes = new System.Windows.Forms.Panel();
-            this.btnNormal = new System.Windows.Forms.Button();
-            this.btnUnderline = new System.Windows.Forms.Button();
-            this.btnItalic = new System.Windows.Forms.Button();
-            this.btnBold = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.mnstripPaint.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbWidth)).BeginInit();
@@ -214,6 +214,50 @@
             this.panelPenAndBrush.Size = new System.Drawing.Size(479, 68);
             this.panelPenAndBrush.TabIndex = 32;
             // 
+            // btnNormal
+            // 
+            this.btnNormal.BackgroundImage = global::Paint_Clone.Properties.Resources.normal2;
+            this.btnNormal.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnNormal.Location = new System.Drawing.Point(144, 24);
+            this.btnNormal.Name = "btnNormal";
+            this.btnNormal.Size = new System.Drawing.Size(22, 23);
+            this.btnNormal.TabIndex = 35;
+            this.btnNormal.UseVisualStyleBackColor = true;
+            this.btnNormal.Click += new System.EventHandler(this.btnNormal_Click);
+            // 
+            // btnUnderline
+            // 
+            this.btnUnderline.BackgroundImage = global::Paint_Clone.Properties.Resources.Underline;
+            this.btnUnderline.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnUnderline.Location = new System.Drawing.Point(116, 24);
+            this.btnUnderline.Name = "btnUnderline";
+            this.btnUnderline.Size = new System.Drawing.Size(22, 23);
+            this.btnUnderline.TabIndex = 34;
+            this.btnUnderline.UseVisualStyleBackColor = true;
+            this.btnUnderline.Click += new System.EventHandler(this.btnUnderline_Click);
+            // 
+            // btnItalic
+            // 
+            this.btnItalic.BackgroundImage = global::Paint_Clone.Properties.Resources.Italic;
+            this.btnItalic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnItalic.Location = new System.Drawing.Point(88, 24);
+            this.btnItalic.Name = "btnItalic";
+            this.btnItalic.Size = new System.Drawing.Size(22, 23);
+            this.btnItalic.TabIndex = 33;
+            this.btnItalic.UseVisualStyleBackColor = true;
+            this.btnItalic.Click += new System.EventHandler(this.btnItalic_Click);
+            // 
+            // btnBold
+            // 
+            this.btnBold.BackgroundImage = global::Paint_Clone.Properties.Resources.Bold;
+            this.btnBold.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnBold.Location = new System.Drawing.Point(59, 24);
+            this.btnBold.Name = "btnBold";
+            this.btnBold.Size = new System.Drawing.Size(23, 23);
+            this.btnBold.TabIndex = 32;
+            this.btnBold.UseVisualStyleBackColor = true;
+            this.btnBold.Click += new System.EventHandler(this.btnBold_Click);
+            // 
             // cbbFontSize
             // 
             this.cbbFontSize.FormattingEnabled = true;
@@ -238,7 +282,7 @@
             this.cbbFontSize.Name = "cbbFontSize";
             this.cbbFontSize.Size = new System.Drawing.Size(38, 21);
             this.cbbFontSize.TabIndex = 31;
-            this.cbbFontSize.Text = "8";
+            this.cbbFontSize.Text = "22";
             this.cbbFontSize.SelectedIndexChanged += new System.EventHandler(this.cbbFontSize_SelectedIndexChanged);
             // 
             // cbbFont
@@ -489,50 +533,6 @@
             this.pnShapes.Name = "pnShapes";
             this.pnShapes.Size = new System.Drawing.Size(511, 68);
             this.pnShapes.TabIndex = 30;
-            // 
-            // btnNormal
-            // 
-            this.btnNormal.BackgroundImage = global::Paint_Clone.Properties.Resources.normal2;
-            this.btnNormal.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnNormal.Location = new System.Drawing.Point(144, 24);
-            this.btnNormal.Name = "btnNormal";
-            this.btnNormal.Size = new System.Drawing.Size(22, 23);
-            this.btnNormal.TabIndex = 35;
-            this.btnNormal.UseVisualStyleBackColor = true;
-            this.btnNormal.Click += new System.EventHandler(this.btnNormal_Click);
-            // 
-            // btnUnderline
-            // 
-            this.btnUnderline.BackgroundImage = global::Paint_Clone.Properties.Resources.Underline;
-            this.btnUnderline.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnUnderline.Location = new System.Drawing.Point(116, 24);
-            this.btnUnderline.Name = "btnUnderline";
-            this.btnUnderline.Size = new System.Drawing.Size(22, 23);
-            this.btnUnderline.TabIndex = 34;
-            this.btnUnderline.UseVisualStyleBackColor = true;
-            this.btnUnderline.Click += new System.EventHandler(this.btnUnderline_Click);
-            // 
-            // btnItalic
-            // 
-            this.btnItalic.BackgroundImage = global::Paint_Clone.Properties.Resources.Italic;
-            this.btnItalic.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnItalic.Location = new System.Drawing.Point(88, 24);
-            this.btnItalic.Name = "btnItalic";
-            this.btnItalic.Size = new System.Drawing.Size(22, 23);
-            this.btnItalic.TabIndex = 33;
-            this.btnItalic.UseVisualStyleBackColor = true;
-            this.btnItalic.Click += new System.EventHandler(this.btnItalic_Click);
-            // 
-            // btnBold
-            // 
-            this.btnBold.BackgroundImage = global::Paint_Clone.Properties.Resources.Bold;
-            this.btnBold.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnBold.Location = new System.Drawing.Point(59, 24);
-            this.btnBold.Name = "btnBold";
-            this.btnBold.Size = new System.Drawing.Size(23, 23);
-            this.btnBold.TabIndex = 32;
-            this.btnBold.UseVisualStyleBackColor = true;
-            this.btnBold.Click += new System.EventHandler(this.btnBold_Click);
             // 
             // pictureBox1
             // 

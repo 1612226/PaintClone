@@ -1591,32 +1591,98 @@ namespace DrawingTools
     // Select Tool
     public class SelectTool : IDrawingTool
     {
+        private Point firstPoint;
+        private Point secondPoint;
+        private bool firstSnap;
+
         public SelectTool(ObjectList objectList)
         {
+            firstSnap = false;
             this.objectList = objectList;
-            objectList.defocusAll();
         }
 
         public override void onMouseDown(object sender, MouseEventArgs e, bool isFill, Pen pen, Color fc, string bs, HatchStyle hs, Font f)
         {
-            List<IDrawingObject> objList = objectList.getAllVisible(e.Location);
-            objectList.defocusAll();
-            if (objList.Count > 0)
-                foreach (var obj in objList)
+            if (e.Button == MouseButtons.Right)
+            {
+                firstSnap = false;
+                (sender as Control).Invalidate();
+                return;
+            }
+
+            if (!firstSnap)
+            {
+                IDrawingObject obj = objectList.getVisible(e.Location);
+                if (obj == null)
+                {
+                    firstSnap = true;
+                    firstPoint = e.Location;
+                }
+                else
+                {
+                    objectList.defocusAll();
                     obj.focus();
+                    reset(sender);
+                }
+                return;
+            }
+
+            // prepare rectangle object
+            int startX = Math.Min(firstPoint.X, secondPoint.X);
+            int startY = Math.Min(firstPoint.Y, secondPoint.Y);
+
+            int endX = Math.Max(firstPoint.X, secondPoint.X);
+            int endY = Math.Max(firstPoint.Y, secondPoint.Y);
+
+            Rectangle bound = new Rectangle(startX, startY, endX - startX + 1, endY - startY + 1);
+
+            // add rectangle object to list for drawing onto picturebox
+            List<IDrawingObject> chosens = objectList.getAllVisible(bound);
+            objectList.defocusAll();
+            foreach (var obj in chosens)
+                obj.focus();
+
             (sender as Control).Invalidate();
+            firstSnap = false;
         }
 
         public override void onMouseMove(object sender, MouseEventArgs e)
         {
+            if (firstSnap)
+            {
+                secondPoint = e.Location;
+                (sender as Control).Invalidate();
+            }
         }
 
         public override void onPartialDraw(Graphics g)
         {
+            if (!firstSnap)
+                return;
+
+            // prepare dashed pen
+            Pen dashedPen = new Pen(Color.Black, 1.0f);
+            dashedPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+
+
+            // prepare dashed rectangle
+            int startX = Math.Min(firstPoint.X, secondPoint.X);
+            int startY = Math.Min(firstPoint.Y, secondPoint.Y);
+
+            int endX = Math.Max(firstPoint.X, secondPoint.X);
+            int endY = Math.Max(firstPoint.Y, secondPoint.Y);
+
+            Rectangle rect = new Rectangle(startX, startY, endX - startX + 1, endY - startY + 1);
+
+            // draw dashed rectangle
+            g.DrawRectangle(dashedPen, rect);
+            dashedPen.Dispose();
         }
 
         public override void reset(object sender)
         {
+            firstSnap = false;
+            (sender as Control).Invalidate();
         }
     }
 
