@@ -12,3 +12,5 @@ Build the project (with release mode)
   <li> Choose multiple object </li>
   <li> Save and Import </li>
 </ol>
+## License
+MIT
